@@ -1,4 +1,4 @@
-package com.example.dsa2_ca2;
+package com.example.dsa2_ca2.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
