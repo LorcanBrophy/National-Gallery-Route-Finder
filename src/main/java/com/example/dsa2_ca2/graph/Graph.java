@@ -6,11 +6,11 @@ import java.util.Map;
 public class Graph<T> {
 
     // fields
-    private Map<Integer, Vertex<T>> vertices;
+    private final Map<Integer, Vertex<T>> vertices;
 
     // constructor
-    public Graph(Map<Integer, Vertex<T>> vertices) {
-        vertices = new HashMap<>();
+    public Graph() {
+        this.vertices = new HashMap<>();
     }
 
     // getters
@@ -46,6 +46,22 @@ public class Graph<T> {
         Vertex<T> terminus = vertices.get(to);
 
         source.connectUndirected(terminus, weight);
+    }
+
+    // prints graph for debugging
+    public void printGraph() {
+        for (Map.Entry<Integer, Vertex<T>> entry : vertices.entrySet()) {
+            int id = entry.getKey();
+            Vertex<T> vertex = entry.getValue();
+
+            System.out.print("Vertex " + id + " (" + vertex.getData() + ") -> ");
+
+            for (Edge<T> edge : vertex.getEdges()) {
+                System.out.print(edge.getdestination().getData() + " (w=" + edge.getWeight() + "), ");
+            }
+
+            System.out.println();
+        }
     }
 
 

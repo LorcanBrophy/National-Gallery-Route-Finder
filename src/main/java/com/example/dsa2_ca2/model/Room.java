@@ -9,11 +9,11 @@ public class Room {
     private MyList<Exhibit> exhibits;
 
     // constructor
-    public Room(int id, String name, String period, MyList<Exhibit> exhibits) {
+    public Room(int id, String name, String period) {
         this.id = id;
         this.name = name;
         this.period = period;
-        this.exhibits = exhibits;
+        this.exhibits = new MyArrayList<>();
     }
 
     // getters
