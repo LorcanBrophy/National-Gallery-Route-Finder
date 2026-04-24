@@ -1,5 +1,9 @@
-id,name,period
+id,name,period,x,y
 18,"Peter Paul Rubens (1577–1640)","Baroque"
 19,"Land and Water: Dutch Painting 1600-1700","Baroque"
 20,"A Different View of Flanders: Flemish Painting 1600-1650","Baroque"
 21,"Anthony van Dyck (1599–1641)","Baroque"
+22,"Rembrandt (1606–1669)","Baroque"
+23,"The Cradle of Dutch Painting: Haarlem 1600–1700","Baroque"
+24,"International Ambitions: Dutch and Flemish History Painting 1600–1700", "Baroque"
+25,"Still Life: European Painting 1600–1900","Baroque"

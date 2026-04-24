@@ -2,6 +2,7 @@ package com.example.dsa2_ca2.model;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 public class MyArrayList<T> implements MyList<T> {
 
@@ -30,6 +31,16 @@ public class MyArrayList<T> implements MyList<T> {
         ensureCapacity();
         elements[size] = element;
         size++;
+        return true;
+    }
+
+    public boolean addAll(List<T> other) {
+        if (other == null) return false;
+
+        for (T element : other) {
+            this.add(element);
+        }
+
         return true;
     }
 

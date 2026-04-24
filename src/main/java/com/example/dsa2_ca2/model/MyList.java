@@ -1,5 +1,7 @@
 package com.example.dsa2_ca2.model;
 
+import java.util.List;
+
 public interface MyList<T> extends Iterable<T> {
 
     /**
@@ -10,6 +12,7 @@ public interface MyList<T> extends Iterable<T> {
      */
     boolean add(T element);
 
+    boolean addAll(List<T> other);
     /**
      * Replaces the element at the specified index with the given element.
      *

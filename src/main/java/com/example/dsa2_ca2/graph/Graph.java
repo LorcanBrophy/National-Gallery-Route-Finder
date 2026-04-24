@@ -15,9 +15,9 @@ public class Graph<T> {
 
     // getters
 
-    public Map<Integer, Vertex<T>> getVertices() {
+    /*public Map<Integer, Vertex<T>> getVertices() {
         return vertices;
-    }
+    }*/
 
 
     // methods
@@ -33,12 +33,12 @@ public class Graph<T> {
     }
 
     // adds directed edge to vertex
-    public void addDirectedEdge(int from, int to, double weight) {
+    /*public void addDirectedEdge(int from, int to, double weight) {
         Vertex<T> source = vertices.get(from);
         Vertex<T> terminus = vertices.get(to);
 
         source.connectDirected(terminus, weight);
-    }
+    }*/
 
     // adds undirected edge to vertex
     public void addUndirectedEdge(int from, int to, double weight) {
@@ -48,7 +48,7 @@ public class Graph<T> {
         source.connectUndirected(terminus, weight);
     }
 
-    // prints graph for debugging
+    /*// prints graph for debugging
     public void printGraph() {
         for (Map.Entry<Integer, Vertex<T>> entry : vertices.entrySet()) {
             int id = entry.getKey();
@@ -62,7 +62,7 @@ public class Graph<T> {
 
             System.out.println();
         }
-    }
+    }*/
 
 
 }

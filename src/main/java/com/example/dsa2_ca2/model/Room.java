@@ -6,6 +6,9 @@ public class Room {
     private int id;
     private String name;
     private String period;
+    //private int x;
+    //private int y;
+
     private MyList<Exhibit> exhibits;
 
     // constructor
@@ -13,6 +16,8 @@ public class Room {
         this.id = id;
         this.name = name;
         this.period = period;
+        //this.x = x;
+        //this.y = y;
         this.exhibits = new MyArrayList<>();
     }
 

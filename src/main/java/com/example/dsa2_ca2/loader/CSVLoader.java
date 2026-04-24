@@ -33,7 +33,7 @@ public class CSVLoader {
                 // split csv:
                 // 21,"Anthony van Dyck (1599–1641)","Baroque"
                 // -> [21, "Anthony van Dyck (1599–1641)", "Baroque"]
-                String[] fields = line.split(",", 3);
+                String[] fields = line.split(",", 5);
 
                 // assign each field for Room constructor
                 int id = Integer.parseInt(fields[0].trim());
