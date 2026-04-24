@@ -16,6 +16,7 @@ public class Application extends javafx.application.Application {
         // put the loaded fxml into a scene
         Scene scene = new Scene(fxmlLoader.load(), 1200, 800);
 
+        // stylesheet
 
         // window setup
         stage.setTitle("National Gallery Route Finder");
