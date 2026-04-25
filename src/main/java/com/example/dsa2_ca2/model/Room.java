@@ -6,18 +6,18 @@ public class Room {
     private int id;
     private String name;
     private String period;
-    //private int x;
-    //private int y;
+    private int x;
+    private int y;
 
     private MyList<Exhibit> exhibits;
 
     // constructor
-    public Room(int id, String name, String period) {
+    public Room(int id, String name, String period, int x, int y) {
         this.id = id;
         this.name = name;
         this.period = period;
-        //this.x = x;
-        //this.y = y;
+        this.x = x;
+        this.y = y;
         this.exhibits = new MyArrayList<>();
     }
 
@@ -33,6 +33,14 @@ public class Room {
     }
     public MyList<Exhibit> getExhibits() {
         return exhibits;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
     }
 
     // setters

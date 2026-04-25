@@ -21,10 +21,15 @@
                     <MenuItem text="Exit"/>
                 </Menu>
 
-                <Menu text="Traversal">
+                <Menu text="Setup">
                     <MenuItem text="Choose Points" onAction="#choosePoints"/>
+                    <MenuItem text="Choose Start Room" onAction="#chooseStartRoom"/>
+                </Menu>
+
+                <Menu text="Traversal">
                     <MenuItem text="BFS" onAction="#onBFS"/>
                     <MenuItem text="PixelBFS"  onAction="#onPixelBFS"/>
+                    <MenuItem text="DFS" onAction="#onDFS"/>
                 </Menu>
 
             </MenuBar>

@@ -13,7 +13,7 @@ public class Edge<T> {
     }
 
     // getters
-    public Vertex<T> getdestination() {
+    public Vertex<T> getDestination() {
         return destination;
     }
     public double getWeight() {

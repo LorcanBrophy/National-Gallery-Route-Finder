@@ -1,18 +1,24 @@
 package com.example.dsa2_ca2.controller;
 
+import com.example.dsa2_ca2.graph.Vertex;
 import com.example.dsa2_ca2.loader.CSVLoader;
 import com.example.dsa2_ca2.graph.Graph;
+import com.example.dsa2_ca2.model.MyArrayList;
 import com.example.dsa2_ca2.model.MyList;
 import com.example.dsa2_ca2.model.Room;
 import com.example.dsa2_ca2.traversal.BFS;
+import com.example.dsa2_ca2.traversal.DFS;
 import com.example.dsa2_ca2.traversal.PixelBFS;
 import javafx.animation.KeyFrame;
+import javafx.animation.PauseTransition;
+import javafx.animation.SequentialTransition;
 import javafx.animation.Timeline;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -23,6 +29,10 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class Controller {
     @FXML private Canvas mapCanvas;
@@ -37,7 +47,8 @@ public class Controller {
 
     private EventHandler<MouseEvent> pointSelectionHandler;
 
-    @FXML public void initialize() throws IOException {
+    @FXML
+    public void initialize() throws IOException {
         buildGraph();
         loadBackgroundImage();
         setupEventHandlers();
@@ -55,7 +66,8 @@ public class Controller {
         );
     }
 
-    @FXML private void loadBackgroundImage() {
+    @FXML
+    private void loadBackgroundImage() {
         File file = new File("src/main/resources/com/example/dsa2_ca2/map.png");
         backgroundImage = new Image(file.toURI().toString());
 
@@ -82,7 +94,8 @@ public class Controller {
         };
     }
 
-    @FXML private void choosePoints() {
+    @FXML
+    private void choosePoints() {
         startPoint = null;
         endPoint = null;
 
@@ -107,10 +120,10 @@ public class Controller {
     }
 
 
+    // BFS
 
-
-
-    @FXML public void onBFS() {
+    @FXML
+    public void onBFS() {
         int startID = 21;
         int endID = 25;
 
@@ -119,7 +132,8 @@ public class Controller {
         System.out.println("Distance from room " + startID + " to room " + endID + " = " + path.size());
     }
 
-    @FXML public void onPixelBFS() {
+    @FXML
+    public void onPixelBFS() {
         try {
             BufferedImage bwImage = ImageIO.read(
                     new File("src/main/resources/com/example/dsa2_ca2/map(BW).png")
@@ -133,7 +147,7 @@ public class Controller {
             System.out.println("Pixel path length: " + path.size());
 
             redrawMap();
-            drawPath(path);
+            drawBFSPath(path);
 
 
         } catch (IOException e) {
@@ -146,12 +160,12 @@ public class Controller {
         graphicsContext.drawImage(backgroundImage, 0, 0);
     }
 
-    private void drawPath(MyList<PixelBFS.Point> path) {
+    private void drawBFSPath(MyList<PixelBFS.Point> path) {
         PixelBFS.Point start = path.get(0);
         PixelBFS.Point end = path.get(path.size() - 1);
 
         // draw start point
-        graphicsContext.setFill(Color.RED);
+        graphicsContext.setFill(Color.LIME);
         graphicsContext.fillOval(start.x() - 5, start.y() - 5, 10, 10);
         graphicsContext.setStroke(Color.BLACK);
         graphicsContext.strokeOval(start.x() - 5, start.y() - 5, 10, 10);
@@ -182,5 +196,269 @@ public class Controller {
 
         timeline.play();
 
+    }
+
+
+    // DFS
+
+    @FXML
+    private TextField maxRoutesField;  // User input for number of routes
+
+    @FXML
+    private ListView<String> routesListView;
+
+    @FXML
+    public void onDFS() {
+
+        int startID = chooseStartRoom();
+        int endID = chooseEndRoom();
+
+        int numPermutations = numberDialog("Enter number of route permutations:");
+
+        MyList<MyList<Room>> allPaths = DFS.traverse(graph, startID, endID, numPermutations);
+
+        System.out.println("Total number of routes = " + allPaths.size());
+
+
+        animateDFSRecursion(allPaths, 0);
+
+        for (int i = 0; i < allPaths.size(); i++) {
+            MyList<Room> path = allPaths.get(i);
+            System.out.print("Route " + (i+1) + " (length: " + path.size() + " rooms): ");
+
+            for (int j = 0; j < path.size(); j++) {
+                System.out.print(path.get(j).getId());
+                if (j < path.size() - 1) System.out.print(" → ");
+            }
+            System.out.println();
+        }
+    }
+
+    @FXML
+    private int chooseStartRoom() {
+        MyList<String> roomNames = getAllRoomName();
+
+        ComboBox<String> comboBox = new ComboBox<>();
+
+        for (String name : roomNames) {
+            comboBox.getItems().add(name);
+        }
+
+        Dialog<String> dialog = new Dialog<>();
+        dialog.setTitle("Choose Start Room");
+        dialog.setHeaderText("Select the starting room:");
+
+        String result = showComboDialog(comboBox, dialog);
+
+        int startID;
+
+        if (result != null) {
+            String[] parts = result.split(" - ");
+            startID = Integer.parseInt(parts[0]);
+
+
+            System.out.println("Start room selected: " + result);
+            System.out.println("Start ID: " + startID);
+
+            return startID;
+        }
+
+        return -1;
+    }
+
+    @FXML
+    private int chooseEndRoom() {
+        MyList<String> roomNames = getAllRoomName();
+
+        ComboBox<String> comboBox = new ComboBox<>();
+
+        for (String name : roomNames) {
+            comboBox.getItems().add(name);
+        }
+
+        Dialog<String> dialog = new Dialog<>();
+        dialog.setTitle("Choose End Room");
+        dialog.setHeaderText("Select the ending room:");
+
+        String result = showComboDialog(comboBox, dialog);
+
+        int endID;
+
+        if (result != null) {
+            String[] parts = result.split(" - ");
+            endID = Integer.parseInt(parts[0]);
+
+
+            System.out.println("End room selected: " + result);
+            System.out.println("End ID: " + endID);
+
+            return endID;
+        }
+
+        return -1;
+    }
+
+    // DRAW ROUTES
+    @FXML
+    private void drawPath(MyList<Room> path) {
+        Room start = path.get(0);
+        Room end = path.get(path.size() - 1);
+
+        // draw start point
+        graphicsContext.setFill(Color.RED);
+        graphicsContext.fillOval(start.getX() - 5, start.getY() - 5, 10, 10);
+        graphicsContext.setStroke(Color.BLACK);
+        graphicsContext.strokeOval(start.getX() - 5, start.getY() - 5, 10, 10);
+
+        // draw end point
+        graphicsContext.setFill(Color.RED);
+        graphicsContext.fillOval(end.getX() - 5, end.getY() - 5, 10, 10);
+        graphicsContext.setStroke(Color.BLACK);
+        graphicsContext.strokeOval(end.getX() - 5, end.getY() - 5, 10, 10);
+
+        graphicsContext.setStroke(Color.BLUE);
+        graphicsContext.setLineWidth(2.0);
+
+        Timeline timeline = new Timeline();
+        double interval = 2000.0 / path.size(); // ms
+
+        for (int i = 0; i < path.size() - 1; i++) {
+
+            int index = i;
+            KeyFrame keyFrame = new KeyFrame(Duration.millis(i * interval), _ -> {
+                Room a = path.get(index);
+                Room b = path.get(index + 1);
+                graphicsContext.strokeLine(a.getX(), a.getY(), b.getX(), b.getY());
+            });
+
+            timeline.getKeyFrames().add(keyFrame);
+        }
+
+        timeline.play();
+
+    }
+
+    private void animateDFSRecursion(MyList<MyList<Room>> allPaths, int currPath) {
+        // base case
+        if (currPath >= allPaths.size()) return;
+
+        MyList<Room> path = allPaths.get(currPath);
+        redrawMap();
+        drawMarkers(path);
+
+        Timeline timeline = new Timeline();
+
+        double interval = 2000.0 / (path.size());
+
+        for (int i = 0; i < path.size() - 1; i++) {
+            int index = i;
+
+            KeyFrame keyFrame = new KeyFrame(Duration.millis(i * interval), _ -> {
+                Room a = path.get(index);
+                Room b = path.get(index + 1);
+                graphicsContext.strokeLine(a.getX(), a.getY(), b.getX(), b.getY());
+            });
+
+            timeline.getKeyFrames().add(keyFrame);
+        }
+
+        // recursion + pause
+        timeline.setOnFinished(event -> {
+            PauseTransition pause = new PauseTransition(Duration.millis(1000));
+            pause.setOnFinished(_ -> animateDFSRecursion(allPaths, currPath + 1));
+            pause.play();
+        });
+
+        timeline.play();
+
+    }
+
+    private void drawMarkers(MyList<Room> path) {
+        if (path == null || path.isEmpty()) return;
+
+        Room start = path.get(0);
+        Room end = path.get(path.size() - 1);
+
+        // Draw start point (green for start)
+        graphicsContext.setFill(Color.LIME);
+        graphicsContext.fillOval(start.getX() - 5, start.getY() - 5, 10, 10);
+        graphicsContext.setStroke(Color.BLACK);
+        graphicsContext.strokeOval(start.getX() - 5, start.getY() - 5, 10, 10);
+
+        // Draw end point (red for destination)
+        graphicsContext.setFill(Color.RED);
+        graphicsContext.fillOval(end.getX() - 5, end.getY() - 5, 10, 10);
+        graphicsContext.setStroke(Color.BLACK);
+        graphicsContext.strokeOval(end.getX() - 5, end.getY() - 5, 10, 10);
+
+        graphicsContext.setStroke(Color.BLUE);
+        graphicsContext.setLineWidth(2.0);
+    }
+
+    private MyList<String> getAllRoomName() {
+        MyList<String> roomNames = new MyArrayList<>();
+
+        List<String> temp = new ArrayList<>();
+
+
+        for (Vertex<Room> vertex : graph.getAllVertices()) {
+            Room room = vertex.getData();
+            String displayNumber;
+
+            if (room.getId() == 151) {
+                displayNumber = "15a";
+            } else if (room.getId() == 171) {
+                displayNumber = "17a";
+            } else {
+                displayNumber = String.valueOf(room.getId());
+            }
+
+            String display = displayNumber + " - " + room.getName();
+            temp.add(display);
+        }
+        Collections.sort(temp);
+
+        for (String name : temp) {
+            roomNames.add(name);
+        }
+
+        return roomNames;
+    }
+
+    @FXML
+    private String showComboDialog(ComboBox<String> comboBox, Dialog<String> dialog) {
+        dialog.getDialogPane().setContent(comboBox);
+
+        ButtonType ok = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        dialog.getDialogPane().getButtonTypes().setAll(ok, cancel);
+
+        dialog.setResultConverter(button ->
+                button == ok ? comboBox.getValue() : null
+        );
+
+        return dialog.showAndWait().orElse(null);
+    }
+
+    @FXML
+    private Integer numberDialog(String dialogTitle) {
+
+        Dialog<Integer> dialog = new Dialog<>();
+        dialog.setTitle(dialogTitle);
+        dialog.setHeaderText("Enter Number of Permutations:");
+
+        Spinner<Integer> spinner = new Spinner<>(1, 100, 1);
+        spinner.setEditable(false);
+
+        dialog.getDialogPane().setContent(spinner);
+
+        ButtonType ok = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+        dialog.getDialogPane().getButtonTypes().addAll(ok, cancel);
+
+        dialog.setResultConverter(button -> button == ok ? spinner.getValue() : null);
+
+        return dialog.showAndWait().orElse(null);
     }
 }

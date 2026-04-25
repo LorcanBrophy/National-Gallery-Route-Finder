@@ -55,10 +55,10 @@ public class GraphTest {
         assertEquals(2, v19.getEdges().size()); // 19 <--> 18, 20
 
         // test edges
-        assertEquals(19, v18.getEdges().get(0).getdestination().getData().getId());
-        assertEquals(21, v18.getEdges().get(1).getdestination().getData().getId());
+        assertEquals(19, v18.getEdges().get(0).getDestination().getData().getId());
+        assertEquals(21, v18.getEdges().get(1).getDestination().getData().getId());
 
-        assertEquals(18, v19.getEdges().get(0).getdestination().getData().getId());
+        assertEquals(18, v19.getEdges().get(0).getDestination().getData().getId());
 
         // test weight
         assertEquals(1, v18.getEdges().get(0).getWeight());

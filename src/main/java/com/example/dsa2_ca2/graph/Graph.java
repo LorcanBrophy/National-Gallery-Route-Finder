@@ -1,5 +1,8 @@
 package com.example.dsa2_ca2.graph;
 
+import com.example.dsa2_ca2.model.MyArrayList;
+import com.example.dsa2_ca2.model.MyList;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,6 +33,14 @@ public class Graph<T> {
     // returns vertex from key
     public Vertex<T> getVertex(int id) {
         return vertices.get(id);
+    }
+
+    public MyList<Vertex<T>> getAllVertices() {
+        MyList<Vertex<T>> list = new MyArrayList<>();
+        for (Vertex<T> vertex : vertices.values()) {
+            list.add(vertex);
+        }
+        return list;
     }
 
     // adds directed edge to vertex

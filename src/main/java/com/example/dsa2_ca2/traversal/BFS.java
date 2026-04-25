@@ -39,10 +39,8 @@ public class BFS {
                 break;
             }
 
-            //result.add(current.getData());
-
             for (Edge<T> edge : current.getEdges()) {
-                Vertex<T> neighbor = edge.getdestination();
+                Vertex<T> neighbor = edge.getDestination();
 
                 if (!visited.contains(neighbor)) {
                     visited.add(neighbor);

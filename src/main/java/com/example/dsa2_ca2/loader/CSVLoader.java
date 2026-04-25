@@ -39,9 +39,11 @@ public class CSVLoader {
                 int id = Integer.parseInt(fields[0].trim());
                 String name = fields[1].replace("\"", "").trim(); // \" removes any " characters i.e ""Hello Hassan"" -> "Hello Hassan"
                 String period = fields[2].replace("\"", "").trim();
+                int x = Integer.parseInt(fields[3].trim());
+                int y = Integer.parseInt(fields[4].trim());
 
                 // create the room object and add to graph
-                Room room = new Room(id, name, period);
+                Room room = new Room(id, name, period, x, y);
                 graph.addVertex(id, room);
             }
         }
