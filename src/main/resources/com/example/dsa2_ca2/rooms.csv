@@ -1,5 +1,17 @@
 id,name,period,x,y
-15,"Artists Inspiring Artists","Baroque",263,75
+1,"Stubbs: Portrait of a Horse","Rococo to Romanticism",503,421
+2,"Power Patronage and Politics: Painting in Florence and Rome 1500–1600","Renaissance",458,395
+4,"The Spectacle of Portraiture: European Painting 1500–1600","Renaissance",417,398
+5,"City and Court: Northern Italian Painting 1500–1600","Renaissance",417,340
+6,"Design Colour and Invention: Central Italian Painting 1500–1575","Renaissance",372,393
+7,"Paintings for the Home: Italian Painting 1510–1525","Renaissance",336,421
+8,"Titian","Renaissance",295,384
+9,"Radical Innovation and Rivalry: Painting in Venice 1500–1600","Renaissance",298,298
+10,"Devotion by Design: Italian Altarpieces around 1500","Renaissance",365,294
+11,"Portraits of Women","Renaissance",415,293
+12,"The Triumphs of Caesar","Renaissance",463,296
+14,"Intellectual Pursuits: Painting at the Northern Italian Courts 1450–1550","Renaissance",417,254
+15,"Artists Inspiring Artists","Baroque",313,203
 151,"Fine Painters", "Baroque",296,187
 16,"A New Art for a New Nation: Dutch Painting 1600–1700","Baroque",273,222
 17,"Modern Subjects: Dutch Painting 1600–1700","Baroque",274,194
@@ -10,7 +22,7 @@ id,name,period,x,y
 21,"Anthony van Dyck (1599–1641)","Baroque",262,77
 22,"Rembrandt (1606–1669)","Baroque",364,77
 23,"The Cradle of Dutch Painting: Haarlem 1600–1700","Baroque",365,109
-24,"International Ambitions: Dutch and Flemish History Painting 1600–1700", "Baroque",365,139
+24,"International Ambitions: Dutch and Flemish History Painting 1600–1700","Baroque",365,139
 25,"Still Life: European Painting 1600–1900","Baroque",416,141
 26,"Intimate Baroque: European Painting 1600–1700","Baroque",350,169
 27,"The Italianate Landscape: European Painting 1600–1700","Baroque",383,167
@@ -19,3 +31,33 @@ id,name,period,x,y
 30,"Power and Piety: Spanish Painting 1600–1700","Baroque",539,204
 31,"Charles I and Henrietta Maria: A Royal Collection 1625–1649","Baroque",542,159
 32,"Baroque Splendour: Italian Painting 1600–1700","Baroque",673,210
+33,"City of Pleasure: Painting in Venice 1700–1800","Rococo to Romanticism",775,207
+34,"A Distinct Style: British Painting 1740–1800","Rococo to Romanticism",770,299
+35,"Rococo to Revolution: French Painting 1700–1800","Rococo to Romanticism",725,294
+36,"Claude and Turner","Rococo to Romanticism",672,296
+37,"The International 18th Century","Rococo to Romanticism",672,248
+38,"The Academy: European Painting 1800–1850","Modernism",621,298
+39,"Capturing the Landscape: European Painting 1650–1850","Modernism",586,296
+40,"Turner Constable and Corot: British and French Landscape Painting 1800–1860","Modernism",668,347
+41,"Early Impressionism: French Painting 1860–1880","Modernism",787,381
+42,"Pastels","Modernism",750,424
+43,"Van Gogh Gauguin and Post-Impressionism: French Painting 1880–1905","Modernism",716,407
+44,"Post-Impressionism: French Painting 1850–1900","Modernism",670,408
+45,"New Energies: Painting around 1900","Modernism",630,410
+46,"Claude Monet (1840–1926)","Modernism",583,418
+51,"The Wonder of Art: What Painting Can Do","Medieval",139,283
+52,"Creating Illusion: Netherlandish Painting 1420–1480","Medieval",150,323
+53,"Divine Encounters: Netherlandish Painting 1480–1520","Medieval",149,358
+54,"Northern European Painting","Medieval",149,389
+55,"Lines of Expression: German Painting 1400–1520","Medieval",149,421
+56,"Looking at Nature: European Painting 1430–1540","Medieval",143,453
+57,"Wonders of Design: Altarpieces in Florence 1400–1450","Medieval",104,438
+58,"Lyrical Narrative: Painting in Siena 1300–1500","Medieval",105,390
+59,"Architecture and Illusion: Painting in Ferrara Lombardy and the Veneto 1450–1500","Medieval",103,342
+60,"Ambition and Innovation: Painting in Florence 1450–1500","Medieval",104,283
+61,"Shaping the Renaissance Ideal: Raphael in Central Italy 1450–1500","Medieval",61,278
+62,"The Family Palace: Painting in Florence 1400‒1500","Medieval",62,320
+63,"La Serenissima: Painting in Venice 1450–1500","Medieval",59,361
+64,"Gold: European Painting 1260–1550","Medieval",63,396
+65,"Piety and Passion: Italian Painting 1260–1350","Medieval",66,421
+66,"Piero della Francesca (1415/20–1492)","Medieval",68,445

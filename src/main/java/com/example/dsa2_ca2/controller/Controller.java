@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class Controller {
@@ -125,12 +126,13 @@ public class Controller {
 
     @FXML
     public void onBFS() {
-        int startID = 21;
-        int endID = 25;
+        int startID = chooseStartRoom();
+        if (startID == -1) return;
+        int endID = chooseEndRoom();
 
         MyList<Room> path = BFS.traverse(graph, startID, endID);
 
-        System.out.println("Distance from room " + startID + " to room " + endID + " = " + path.size());
+        drawPath(path);
     }
 
     @FXML
@@ -162,6 +164,8 @@ public class Controller {
     }
 
     private void drawBFSPath(MyList<PixelBFS.Point> path) {
+        redrawMap();
+
         PixelBFS.Point start = path.get(0);
         PixelBFS.Point end = path.get(path.size() - 1);
 
@@ -209,6 +213,7 @@ public class Controller {
     public void onDFS() {
 
         int startID = chooseStartRoom();
+        if (startID == -1) return;
         int endID = chooseEndRoom();
 
         int numPermutations = numberDialog("Enter number of route permutations:");
@@ -219,17 +224,7 @@ public class Controller {
 
 
         animateDFSRecursion(allPaths, 0);
-
-        for (int i = 0; i < allPaths.size(); i++) {
-            MyList<Room> path = allPaths.get(i);
-            System.out.print("Route " + (i+1) + " (length: " + path.size() + " rooms): ");
-
-            for (int j = 0; j < path.size(); j++) {
-                System.out.print(path.get(j).getId());
-                if (j < path.size() - 1) System.out.print(" → ");
-            }
-            System.out.println();
-        }
+        viewRoutes(allPaths);
     }
 
     @FXML
@@ -247,21 +242,19 @@ public class Controller {
         dialog.setHeaderText("Select the starting room:");
 
         String result = showComboDialog(comboBox, dialog);
+        if (result == null) return -1;
 
         int startID;
 
-        if (result != null) {
-            String[] parts = result.split(" - ");
-            startID = Integer.parseInt(parts[0]);
+        String[] parts = result.split(" - ");
+        startID = Integer.parseInt(parts[0]);
 
 
-            System.out.println("Start room selected: " + result);
-            System.out.println("Start ID: " + startID);
+        System.out.println("Start room selected: " + result);
+        System.out.println("Start ID: " + startID);
 
-            return startID;
-        }
+        return startID;
 
-        return -1;
     }
 
     @FXML
@@ -299,6 +292,8 @@ public class Controller {
     // DRAW ROUTES
     @FXML
     private void drawPath(MyList<Room> path) {
+        redrawMap();
+
         Room start = path.get(0);
         Room end = path.get(path.size() - 1);
 
@@ -337,6 +332,7 @@ public class Controller {
     }
 
     private void animateDFSRecursion(MyList<MyList<Room>> allPaths, int currPath) {
+        //redrawMap();
 
         // TODO maybe implement diff colour for routes
         Color[] colors = {
@@ -410,11 +406,16 @@ public class Controller {
     private MyList<String> getAllRoomName() {
         MyList<String> roomNames = new MyArrayList<>();
 
-        List<String> temp = new ArrayList<>();
+        List<Room> rooms = new ArrayList<>();
 
 
         for (Vertex<Room> vertex : graph.getAllVertices()) {
-            Room room = vertex.getData();
+            rooms.add(vertex.getData());
+        }
+
+        rooms.sort(Comparator.comparingInt(Room::getId));
+
+        for (Room room : rooms) {
             String displayNumber;
 
             if (room.getId() == 151) {
@@ -425,13 +426,7 @@ public class Controller {
                 displayNumber = String.valueOf(room.getId());
             }
 
-            String display = displayNumber + " - " + room.getName();
-            temp.add(display);
-        }
-        Collections.sort(temp);
-
-        for (String name : temp) {
-            roomNames.add(name);
+            roomNames.add(displayNumber + " - " + room.getName());
         }
 
         return roomNames;
@@ -474,15 +469,57 @@ public class Controller {
         return dialog.showAndWait().orElse(null);
     }
 
-
     @FXML
     private void onDijkstra() {
         int startID = chooseStartRoom();
+        if (startID == -1) return;
         int endID = chooseEndRoom();
 
         MyList<Room> path = Dijkstra.traverse(graph, startID, endID);
         if (path.isEmpty()) return;
 
         drawPath(path);
+
+    }
+
+    @FXML
+    public void viewRoutes(MyList<MyList<Room>> allPaths) {
+
+        // create a textArea and fill it with the routes
+        TextArea textArea = new TextArea(printRoutes(allPaths));
+        textArea.setWrapText(false);
+
+        // create an alert to display the textArea
+        Alert resultWindow = new Alert(Alert.AlertType.INFORMATION);
+        resultWindow.setTitle("All Permutations");
+        resultWindow.setHeaderText("Disply of all DFS routes");
+        resultWindow.setGraphic(null);
+
+        // adjust size
+        resultWindow.getDialogPane().setMinWidth(500);
+        resultWindow.getDialogPane().setMinHeight(200);
+
+        // set the textArea as the content of the alert
+        resultWindow.getDialogPane().setContent(textArea);
+
+        // show the alert and wait for the user to close it
+        resultWindow.showAndWait();
+    }
+
+    private String printRoutes(MyList<MyList<Room>> allPaths) {
+        StringBuilder result = new StringBuilder();
+
+        for (int i = 0; i < allPaths.size(); i++) {
+            MyList<Room> path = allPaths.get(i);
+            result.append("Route ").append(i + 1).append(" (length: ").append(path.size()).append(" rooms): ");
+
+            for (int j = 0; j < path.size(); j++) {
+                result.append(path.get(j).getId());
+                if (j < path.size() - 1) result.append(" → ");
+            }
+            result.append("\n");
+        }
+
+        return result.toString();
     }
 }

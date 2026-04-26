@@ -23,7 +23,6 @@
 
                 <Menu text="Setup">
                     <MenuItem text="Choose Points" onAction="#choosePoints"/>
-                    <MenuItem text="Choose Start Room" onAction="#chooseStartRoom"/>
                 </Menu>
 
                 <Menu text="Traversal">

@@ -1,6 +1,7 @@
 package com.example.dsa2_ca2.graph;
 
 import com.example.dsa2_ca2.loader.CSVLoader;
+import com.example.dsa2_ca2.model.MyList;
 import com.example.dsa2_ca2.model.Room;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,7 @@ public class GraphTest {
     private Graph<Room> graph;
     private Vertex<Room> v18;
     private Vertex<Room> v19;
+    private MyList<Vertex<Room>> allVertices;
 
 
     @BeforeEach
@@ -31,6 +33,8 @@ public class GraphTest {
         // assign vertices
         v18 = graph.getVertex(18);
         v19 = graph.getVertex(19);
+
+        allVertices = graph.getAllVertices();
     }
 
     /*@Test
@@ -51,7 +55,7 @@ public class GraphTest {
     void testUndirectedEdge() {
 
         // test size
-        assertEquals(2, v18.getEdges().size()); // 18 <--> 19, 21
+        assertEquals(4, v18.getEdges().size()); // 18 <--> 19, 21, 22, 24
         assertEquals(2, v19.getEdges().size()); // 19 <--> 18, 20
 
         // test edges
@@ -64,4 +68,10 @@ public class GraphTest {
         assertEquals(1, v18.getEdges().get(0).getWeight());
         assertEquals(1, v19.getEdges().get(0).getWeight());
     }
+
+    @Test
+    void getAllVertices() {
+        assertFalse(allVertices.isEmpty());
+    }
+
 }

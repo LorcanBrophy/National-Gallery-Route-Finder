@@ -20,7 +20,7 @@ public class Dijkstra {
         MyList<Vertex<T>> vertices = graph.getAllVertices();
         int size = vertices.size();
 
-        // map vertex -> id so i can access cost/parent with id
+        // map vertex -> id, so I can access cost/parent with id
         Map<Vertex<T>, Integer> map = new HashMap<>();
         for (int i = 0; i < size; i++) map.put(vertices.get(i), i);
 
@@ -58,8 +58,6 @@ public class Dijkstra {
                 }
             }
         }
-
-        int endIndex = map.get(end);
 
         LinkedList<T> path = new LinkedList<>();
         int curr = map.get(end);
