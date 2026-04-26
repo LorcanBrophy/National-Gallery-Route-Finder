@@ -30,6 +30,7 @@
                     <MenuItem text="BFS" onAction="#onBFS"/>
                     <MenuItem text="PixelBFS"  onAction="#onPixelBFS"/>
                     <MenuItem text="DFS" onAction="#onDFS"/>
+                    <MenuItem text="Dijkstra" onAction="#onDijkstra"/>
                 </Menu>
 
             </MenuBar>

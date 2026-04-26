@@ -40,12 +40,12 @@ public class BFS {
             }
 
             for (Edge<T> edge : current.getEdges()) {
-                Vertex<T> neighbor = edge.getDestination();
+                Vertex<T> neighbour = edge.getDestination();
 
-                if (!visited.contains(neighbor)) {
-                    visited.add(neighbor);
-                    queue.add(neighbor);
-                    parent.put(neighbor, current);
+                if (!visited.contains(neighbour)) {
+                    visited.add(neighbour);
+                    queue.add(neighbour);
+                    parent.put(neighbour, current);
                 }
             }
         }

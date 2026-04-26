@@ -8,6 +8,7 @@ import com.example.dsa2_ca2.model.MyList;
 import com.example.dsa2_ca2.model.Room;
 import com.example.dsa2_ca2.traversal.BFS;
 import com.example.dsa2_ca2.traversal.DFS;
+import com.example.dsa2_ca2.traversal.Dijkstra;
 import com.example.dsa2_ca2.traversal.PixelBFS;
 import javafx.animation.KeyFrame;
 import javafx.animation.PauseTransition;
@@ -202,9 +203,6 @@ public class Controller {
     // DFS
 
     @FXML
-    private TextField maxRoutesField;  // User input for number of routes
-
-    @FXML
     private ListView<String> routesListView;
 
     @FXML
@@ -339,6 +337,20 @@ public class Controller {
     }
 
     private void animateDFSRecursion(MyList<MyList<Room>> allPaths, int currPath) {
+
+        // TODO maybe implement diff colour for routes
+        Color[] colors = {
+                Color.rgb(255, 0, 0),
+                Color.rgb(0, 0, 255),
+                Color.rgb(0, 255, 0),
+                Color.rgb(255, 165, 0),
+                Color.rgb(128, 0, 128),
+                Color.rgb(255, 192, 203),
+                Color.rgb(0, 255, 255),
+                Color.rgb(255, 255, 0)
+        };
+
+
         // base case
         if (currPath >= allPaths.size()) return;
 
@@ -460,5 +472,17 @@ public class Controller {
         dialog.setResultConverter(button -> button == ok ? spinner.getValue() : null);
 
         return dialog.showAndWait().orElse(null);
+    }
+
+
+    @FXML
+    private void onDijkstra() {
+        int startID = chooseStartRoom();
+        int endID = chooseEndRoom();
+
+        MyList<Room> path = Dijkstra.traverse(graph, startID, endID);
+        if (path.isEmpty()) return;
+
+        drawPath(path);
     }
 }

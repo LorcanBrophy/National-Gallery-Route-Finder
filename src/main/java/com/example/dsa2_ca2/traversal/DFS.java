@@ -40,11 +40,11 @@ public class DFS {
             }
 
             for (Edge<T> edge : current.getEdges()) {
-                Vertex<T> neighbor = edge.getDestination();
+                Vertex<T> neighbour = edge.getDestination();
 
-                if (!visited.contains(neighbor)) {
-                    visited.add(neighbor);
-                    stack.push(neighbor);
+                if (!visited.contains(neighbour)) {
+                    visited.add(neighbour);
+                    stack.push(neighbour);
                 }
             }
         }
@@ -84,20 +84,20 @@ public class DFS {
         }
 
         for (Edge<T> edge : current.getEdges()) {
-            Vertex<T> neighbor = edge.getDestination();
+            Vertex<T> neighbour = edge.getDestination();
 
-            if (!visited.contains(neighbor)) {
+            if (!visited.contains(neighbour)) {
 
-                // move to neighbor
-                visited.add(neighbor);
-                currentPath.add(neighbor);
+                // move to neighbour
+                visited.add(neighbour);
+                currentPath.add(neighbour);
 
                 // recursion
-                recursiveDFS(neighbor, end, visited, currentPath, allPaths, numPermutations);
+                recursiveDFS(neighbour, end, visited, currentPath, allPaths, numPermutations);
 
                 // backtrack
                 currentPath.remove(currentPath.size() - 1);
-                visited.remove(neighbor);
+                visited.remove(neighbour);
 
                 // enough permutations found
                 if (allPaths.size() >= numPermutations) return;
