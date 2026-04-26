@@ -44,6 +44,16 @@ public class MyArrayList<T> implements MyList<T> {
         return true;
     }
 
+    public boolean addAll(MyList<T> other) {
+        if (other == null) return false;
+
+        for (T element : other) {
+            this.add(element);
+        }
+
+        return true;
+    }
+
     /**
      * Replaces the element at the specified index with the given element.
      *

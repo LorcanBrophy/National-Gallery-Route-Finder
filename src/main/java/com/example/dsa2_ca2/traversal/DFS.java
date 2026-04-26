@@ -5,14 +5,13 @@ import com.example.dsa2_ca2.graph.Graph;
 import com.example.dsa2_ca2.graph.Vertex;
 import com.example.dsa2_ca2.model.MyArrayList;
 import com.example.dsa2_ca2.model.MyList;
+import com.example.dsa2_ca2.model.Room;
 
 import java.util.*;
 
 public class DFS {
 
-    // returns shortest path using BFS
-    // TODO add waypoint functions
-    public static <T> MyList<MyList<T>> traverse(Graph<T> graph, int startID, int endID, int numPermutations) {
+    public static <T> MyList<MyList<T>> traverse(Graph<T> graph, int startID, int endID, int numPermutations, Set<T> avoidedRooms, Set<T> waypoints) {
 
         MyList<MyList<T>> allPaths = new MyArrayList<>();
 
@@ -26,55 +25,19 @@ public class DFS {
         visited.add(start);
         currentPath.add(start);
 
-        recursiveDFS(start, end, visited, currentPath, allPaths, numPermutations);
-
-       /* boolean found = false;
-
-        // actual bfs traversal
-        while (!stack.isEmpty()) {
-            Vertex<T> current = stack.pop(); // returns/removes first element in queue in FIFO order
-
-            if (current == end) {
-                found = true;
-                break;
-            }
-
-            for (Edge<T> edge : current.getEdges()) {
-                Vertex<T> neighbour = edge.getDestination();
-
-                if (!visited.contains(neighbour)) {
-                    visited.add(neighbour);
-                    stack.push(neighbour);
-                }
-            }
-        }
-
-        if (!found) return allPaths;
-
-
-        // now that
-
-        LinkedList<T> path = new LinkedList<>();
-
-        Vertex<T> step = end;
-        while (step != null) {
-            path.addFirst(step.getData());
-            step = parent.get(step);
-        }
-
-        allPaths.addAll(path);
-        return allPaths;*/
+        recursiveDFS(start, end, visited, currentPath, allPaths, numPermutations, avoidedRooms, waypoints);
 
         return allPaths;
     }
 
     private static <T> void recursiveDFS(Vertex<T> current, Vertex<T> end, Set<Vertex<T>> visited,
-                                         MyList<Vertex<T>> currentPath, MyList<MyList<T>> allPaths, int numPermutations) {
+                                         MyList<Vertex<T>> currentPath, MyList<MyList<T>> allPaths, int numPermutations,
+                                         Set<T> avoidedRooms, Set<T> waypoints) {
 
         // enough permutations found
         if (allPaths.size() >= numPermutations) return;
 
-        if (current == end) {
+        if (current == end && allWaypointsVisited(currentPath, waypoints)) {
             MyList<T> path = new MyArrayList<>();
             for (Vertex<T> vertex : currentPath) {
                 path.add(vertex.getData());
@@ -86,14 +49,14 @@ public class DFS {
         for (Edge<T> edge : current.getEdges()) {
             Vertex<T> neighbour = edge.getDestination();
 
-            if (!visited.contains(neighbour)) {
+            if (!visited.contains(neighbour) && !avoidedRooms.contains(neighbour.getData())) {
 
                 // move to neighbour
                 visited.add(neighbour);
                 currentPath.add(neighbour);
 
                 // recursion
-                recursiveDFS(neighbour, end, visited, currentPath, allPaths, numPermutations);
+                recursiveDFS(neighbour, end, visited, currentPath, allPaths, numPermutations, avoidedRooms, waypoints);
 
                 // backtrack
                 currentPath.remove(currentPath.size() - 1);
@@ -104,5 +67,16 @@ public class DFS {
             }
         }
 
+    }
+
+    private static <T> boolean allWaypointsVisited(MyList<Vertex<T>> path, Set<T> waypoints) {
+        if (waypoints.isEmpty()) return true;
+
+        Set<T> foundWaypoints = new HashSet<>();
+        for (int i = 0; i < path.size(); i++) {
+            T data = path.get(i).getData();
+            if (waypoints.contains(data)) foundWaypoints.add(data);
+        }
+        return foundWaypoints.containsAll(waypoints);
     }
 }

@@ -10,7 +10,7 @@ import java.util.*;
 
 public class Dijkstra {
 
-    public static <T> MyList<T> traverse(Graph<T> graph, int startID, int endID) {
+    public static <T> MyList<T> traverse(Graph<T> graph, int startID, int endID, Set<T> avoidedRooms) {
         MyList<T> result = new MyArrayList<>();
 
         Vertex<T> start = graph.getVertex(startID);
@@ -50,6 +50,8 @@ public class Dijkstra {
                 Vertex<T> neighbour = edge.getDestination();
                 int neighbourID = map.get(neighbour);
 
+                if (avoidedRooms.contains(neighbour.getData())) continue;
+
                 double newCost = current[1] + edge.getWeight();
                 if (newCost < cost[neighbourID]) {
                     cost[neighbourID] = newCost;
@@ -69,5 +71,35 @@ public class Dijkstra {
         result.addAll(path);
 
         return result;
+    }
+
+    // build multiple routes to call traverse() on
+    // startID = 1, endID = 5, waypointID = 3
+    // 1 -> 3.  3 -> 5, then add those paths
+    public static <T> MyList<T> traverseWaypoints(Graph<T> graph, int startID, int endID, Set<T> avoidedRooms, MyList<Integer> waypoints) {
+        MyList<T> finalPath = new MyArrayList<>();
+
+        // build list of all stopIDs
+        MyList<Integer> allStopIDs = new MyArrayList<>();
+        allStopIDs.add(startID);
+        for (int i = 0; i < waypoints.size(); i++) allStopIDs.add(waypoints.get(i));
+        allStopIDs.add(endID);
+
+        // remove waypoints from the avoided
+        Set<T> avoided = new HashSet<>(avoidedRooms);
+        for (int i = 0; i < waypoints.size(); i++) {
+            Vertex<T> waypointVertex = graph.getVertex(waypoints.get(i));
+            if (waypointVertex != null) avoided.remove(waypointVertex.getData());
+        }
+
+        for (int i = 0; i < allStopIDs.size() - 1; i++) {
+            MyList<T> segment = traverse(graph, allStopIDs.get(i), allStopIDs.get(i + 1), avoided);
+            if (segment.isEmpty()) return new MyArrayList<>();
+
+            if (i == 0) for (int j = 0; j < segment.size(); j++) finalPath.add(segment.get(j));
+            else for (int j = 1; j < segment.size(); j++) finalPath.add(segment.get(j));
+        }
+
+        return finalPath;
     }
 }

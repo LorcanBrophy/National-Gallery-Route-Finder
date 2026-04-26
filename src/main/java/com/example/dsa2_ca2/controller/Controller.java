@@ -23,6 +23,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
@@ -31,14 +32,11 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class Controller {
     @FXML private Canvas mapCanvas;
-    @FXML private HBox imageContainer;
+    @FXML private VBox imageContainer;
     private GraphicsContext graphicsContext;
     private Image backgroundImage;
 
@@ -142,12 +140,15 @@ public class Controller {
                     new File("src/main/resources/com/example/dsa2_ca2/map(BW).png")
             );
 
+            if (startPoint == null || endPoint == null) return;
+
             PixelBFS.Point start = new PixelBFS.Point(startPoint.x(), startPoint.y());
             PixelBFS.Point end = new PixelBFS.Point(endPoint.x(), endPoint.y());
 
             MyList<PixelBFS.Point> path = PixelBFS.traverse(bwImage, start, end);
 
-            System.out.println("Pixel path length: " + path.size());
+            Label header = new Label("Length of path: " + path.size());
+            imageContainer.getChildren().add(header);
 
             redrawMap();
             drawBFSPath(path);
@@ -211,14 +212,27 @@ public class Controller {
 
     @FXML
     public void onDFS() {
-
         int startID = chooseStartRoom();
         if (startID == -1) return;
         int endID = chooseEndRoom();
 
         int numPermutations = numberDialog("Enter number of route permutations:");
 
-        MyList<MyList<Room>> allPaths = DFS.traverse(graph, startID, endID, numPermutations);
+        Set<Room> avoid = new HashSet<>();
+        boolean wantsToAvoid = showConfirmationDialog("Avoid Rooms", "Do you want to exclude any rooms from the route?");
+        if (wantsToAvoid) avoid = showRoomAvoidanceDialog();
+
+        Set<Room> waypoint = new HashSet<>();
+        boolean wantsToVisit = showConfirmationDialog("Waypoint Rooms", "Do you want to include any rooms in the route?");
+        if (wantsToVisit) {
+            waypoint = showWaypointDialog();
+            MyList<MyList<Room>> pathWaypoint = DFS.traverse(graph, startID, endID, numPermutations,  avoid, waypoint);
+            if (pathWaypoint.isEmpty()) return;
+            animateDFSRecursion(pathWaypoint, 0);
+            return;
+        }
+
+        MyList<MyList<Room>> allPaths = DFS.traverse(graph, startID, endID, numPermutations, avoid, null);
 
         System.out.println("Total number of routes = " + allPaths.size());
 
@@ -332,7 +346,7 @@ public class Controller {
     }
 
     private void animateDFSRecursion(MyList<MyList<Room>> allPaths, int currPath) {
-        //redrawMap();
+        redrawMap();
 
         // TODO maybe implement diff colour for routes
         Color[] colors = {
@@ -475,11 +489,120 @@ public class Controller {
         if (startID == -1) return;
         int endID = chooseEndRoom();
 
-        MyList<Room> path = Dijkstra.traverse(graph, startID, endID);
+        Set<Room> avoid = new HashSet<>();
+        boolean wantsToAvoid = showConfirmationDialog("Avoid Rooms", "Do you want to exclude any rooms from the route?");
+        if (wantsToAvoid) avoid = showRoomAvoidanceDialog();
+
+        Set<Room> waypoint = new HashSet<>();
+        boolean wantsToVisit = showConfirmationDialog("Waypoint Rooms", "Do you want to include any rooms in the route?");
+        if (wantsToVisit) {
+            waypoint = showWaypointDialog();
+            MyList<Room> pathWaypoint = Dijkstra.traverseWaypoints(graph, startID, endID, avoid, extractIDs(waypoint));
+            if (pathWaypoint.isEmpty()) return;
+            drawPath(pathWaypoint);
+            return;
+        }
+
+        MyList<Room> path = Dijkstra.traverse(graph, startID, endID, avoid);
         if (path.isEmpty()) return;
 
         drawPath(path);
+    }
 
+    @FXML
+    private MyList<Integer> extractIDs(Set<Room> rooms) {
+        MyList<Integer> result = new MyArrayList<>();
+
+        for (Room room : rooms) result.add(room.getId());
+
+        return result;
+    }
+
+    private Set<Room> showRoomAvoidanceDialog() {
+        Dialog<Set<Room>> dialog = new Dialog<>();
+        dialog.setTitle("Select Rooms to Avoid");
+        dialog.setHeaderText("Check rooms you want to exclude from the route (ctrl + click):");
+
+        ListView<Room> listView = new ListView<>();
+        listView.setPrefSize(600, 300);
+        listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
+        MyList<Vertex<Room>> allVerts = graph.getAllVertices();
+        for (int i = 0; i < allVerts.size(); i++) {
+            Room room = allVerts.get(i).getData();
+            listView.getItems().add(room);
+        }
+
+        listView.setCellFactory(_ -> new ListCell<Room>() {
+            @Override
+            protected void updateItem(Room room, boolean empty) {
+                super.updateItem(room, empty);
+
+                setText((empty || room == null) ? null : room.getId() + " - " + room.getName());
+            }
+        });
+
+        dialog.getDialogPane().setContent(listView);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        dialog.setResultConverter(buttonType -> {
+            if (buttonType == ButtonType.OK) {
+                return new HashSet<>(listView.getSelectionModel().getSelectedItems());
+            }
+            return null;
+        });
+
+        Optional<Set<Room>> result = dialog.showAndWait();
+
+        return result.orElse(new HashSet<>());
+    }
+
+    private Set<Room> showWaypointDialog() {
+        Dialog<Set<Room>> dialog = new Dialog<>();
+        dialog.setTitle("Select Rooms to Visit");
+        dialog.setHeaderText("Check rooms you want to include from the route (ctrl + click):");
+
+        ListView<Room> listView = new ListView<>();
+        listView.setPrefSize(600, 300);
+        listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
+        MyList<Vertex<Room>> allVerts = graph.getAllVertices();
+        for (int i = 0; i < allVerts.size(); i++) {
+            Room room = allVerts.get(i).getData();
+            listView.getItems().add(room);
+        }
+
+        listView.setCellFactory(_ -> new ListCell<Room>() {
+            @Override
+            protected void updateItem(Room room, boolean empty) {
+                super.updateItem(room, empty);
+
+                setText((empty || room == null) ? null : room.getId() + " - " + room.getName());
+            }
+        });
+
+        dialog.getDialogPane().setContent(listView);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        dialog.setResultConverter(buttonType -> {
+            if (buttonType == ButtonType.OK) {
+                return new HashSet<>(listView.getSelectionModel().getSelectedItems());
+            }
+            return null;
+        });
+
+        Optional<Set<Room>> result = dialog.showAndWait();
+
+        return result.orElse(new HashSet<>());
+    }
+
+    private boolean showConfirmationDialog(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(message);
+        alert.getButtonTypes().clear();
+        alert.getButtonTypes().addAll(ButtonType.YES, ButtonType.NO);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        return result.isPresent() && result.get() == ButtonType.YES;
     }
 
     @FXML

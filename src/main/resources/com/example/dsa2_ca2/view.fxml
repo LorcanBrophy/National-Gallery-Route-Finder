@@ -38,9 +38,9 @@
     </top>
 
     <center>
-        <HBox fx:id="imageContainer" spacing="10" alignment="CENTER">
+        <VBox fx:id="imageContainer" spacing="10" alignment="CENTER">
             <Canvas fx:id="mapCanvas" />
-        </HBox>
+        </VBox>
     </center>
 
     <bottom>
