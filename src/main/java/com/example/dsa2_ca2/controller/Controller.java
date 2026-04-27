@@ -3,6 +3,7 @@ package com.example.dsa2_ca2.controller;
 import com.example.dsa2_ca2.graph.Vertex;
 import com.example.dsa2_ca2.loader.CSVLoader;
 import com.example.dsa2_ca2.graph.Graph;
+import com.example.dsa2_ca2.model.Exhibit;
 import com.example.dsa2_ca2.model.MyArrayList;
 import com.example.dsa2_ca2.model.MyList;
 import com.example.dsa2_ca2.model.Room;
@@ -247,9 +248,8 @@ public class Controller {
 
         ComboBox<String> comboBox = new ComboBox<>();
 
-        for (String name : roomNames) {
-            comboBox.getItems().add(name);
-        }
+        for (String name : roomNames) comboBox.getItems().add(name);
+
 
         Dialog<String> dialog = new Dialog<>();
         dialog.setTitle("Choose Start Room");
@@ -263,10 +263,6 @@ public class Controller {
         String[] parts = result.split(" - ");
         startID = Integer.parseInt(parts[0]);
 
-
-        System.out.println("Start room selected: " + result);
-        System.out.println("Start ID: " + startID);
-
         return startID;
 
     }
@@ -277,9 +273,7 @@ public class Controller {
 
         ComboBox<String> comboBox = new ComboBox<>();
 
-        for (String name : roomNames) {
-            comboBox.getItems().add(name);
-        }
+        for (String name : roomNames) comboBox.getItems().add(name);
 
         Dialog<String> dialog = new Dialog<>();
         dialog.setTitle("Choose End Room");
@@ -292,10 +286,6 @@ public class Controller {
         if (result != null) {
             String[] parts = result.split(" - ");
             endID = Integer.parseInt(parts[0]);
-
-
-            System.out.println("End room selected: " + result);
-            System.out.println("End ID: " + endID);
 
             return endID;
         }
@@ -421,12 +411,9 @@ public class Controller {
         MyList<String> roomNames = new MyArrayList<>();
 
         List<Room> rooms = new ArrayList<>();
-
-
         for (Vertex<Room> vertex : graph.getAllVertices()) {
             rooms.add(vertex.getData());
         }
-
         rooms.sort(Comparator.comparingInt(Room::getId));
 
         for (Room room : rooms) {
@@ -444,6 +431,45 @@ public class Controller {
         }
 
         return roomNames;
+    }
+
+    private Set<String> getAllArtistNames() {
+        Map<String, MyList<Integer>> artistRoomMap = getArtistRoomMap();
+
+        return new LinkedHashSet<>(artistRoomMap.keySet());
+    }
+
+    private Map<String, MyList<Integer>> getArtistRoomMap() {
+        Map<String, MyList<Integer>> artistRoomMap = new HashMap<>();
+
+        List<Room> rooms = new ArrayList<>();
+        for (Vertex<Room> vertex : graph.getAllVertices()) {
+            rooms.add(vertex.getData());
+        }
+
+        for (Room room : rooms) {
+            MyList<Exhibit> exhibits = room.getExhibits();
+
+            for (int i = 0; i < exhibits.size(); i++) {
+                String artist = exhibits.get(i).getArtist();
+
+                if (!artistRoomMap.containsKey(artist)) artistRoomMap.put(artist, new MyArrayList<>());
+
+                // removes duplicates (essentially .contains() )
+                MyList<Integer> roomIDs = artistRoomMap.get(artist);
+                boolean alreadyExists = false;
+                for (int j = 0; j < roomIDs.size(); j++) {
+                    if (roomIDs.get(j) == room.getId()) {
+                        alreadyExists = true;
+                        break;
+                    }
+                }
+                if (!alreadyExists) roomIDs.add(room.getId());
+
+            }
+        }
+
+        return artistRoomMap;
     }
 
     @FXML
@@ -493,7 +519,7 @@ public class Controller {
         boolean wantsToAvoid = showConfirmationDialog("Avoid Rooms", "Do you want to exclude any rooms from the route?");
         if (wantsToAvoid) avoid = showRoomAvoidanceDialog();
 
-        Set<Room> waypoint = new HashSet<>();
+        Set<Room> waypoint;
         boolean wantsToVisit = showConfirmationDialog("Waypoint Rooms", "Do you want to include any rooms in the route?");
         if (wantsToVisit) {
             waypoint = showWaypointDialog();
@@ -507,6 +533,96 @@ public class Controller {
         if (path.isEmpty()) return;
 
         drawPath(path);
+    }
+
+    @FXML
+    private void onDijkstraInteresting() {
+        int startID = chooseStartRoom();
+        if (startID == -1) return;
+        int endID = chooseEndRoom();
+
+        Set<Room> avoid = new HashSet<>();
+        boolean wantsToAvoid = showConfirmationDialog("Avoid Rooms", "Do you want to exclude any rooms from the route?");
+        if (wantsToAvoid) avoid = showRoomAvoidanceDialog();
+
+        Set<Room> waypoints = new HashSet<>();
+        boolean wantsToVisit = showConfirmationDialog("Waypoint Rooms", "Do you want to include any rooms in the route?");
+        if (wantsToVisit) waypoints = showWaypointDialog();
+
+        boolean wantsArtists = showConfirmationDialog("Favorite Artists", "Do you want to include rooms with specific artists?");
+        if (wantsArtists) {
+            Set<String> selectedArtists = showArtistsDialog();
+            Map<String, MyList<Integer>> artistRoomMap = getArtistRoomMap();
+
+            for (String name : selectedArtists) {
+                MyList<Integer> roomIDs = artistRoomMap.get(name);
+                for (int i = 0; i < roomIDs.size(); i++) {
+                    int roomID = roomIDs.get(i);
+
+                    Room room = graph.getVertex(roomID).getData();
+                    if (room != null && !avoid.contains(room)) waypoints.add(room);
+                }
+            }
+        }
+
+        if (!waypoints.isEmpty()) {
+            MyList<Room> pathWaypoint = Dijkstra.traverseWaypoints(graph, startID, endID, avoid, extractIDs(waypoints));
+            if (pathWaypoint.isEmpty()) return;
+            drawPath(pathWaypoint);
+            return;
+        }
+
+        MyList<Room> path = Dijkstra.traverse(graph, startID, endID, avoid);
+        if (path.isEmpty()) return;
+
+        drawPath(path);
+
+    }
+
+
+    @FXML
+    private Set<String> showArtistsDialog() {
+        Dialog<Set<String>> dialog = new Dialog<>();
+        dialog.setTitle("Select Favorite Artists");
+        dialog.setHeaderText("Select artists you want to include in the route (ctrl + click):");
+
+        ListView<String> listView = new ListView<>();
+        listView.setPrefSize(600, 300);
+        listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
+
+        Map<String, MyList<Integer>> artistRoomMap = getArtistRoomMap();
+        for (String artist : artistRoomMap.keySet()) {
+            MyList<Integer> roomIds = artistRoomMap.get(artist);
+            StringBuilder roomIdsStr = new StringBuilder();
+            for (int i = 0; i < roomIds.size(); i++) {
+                if (i > 0) roomIdsStr.append(", ");
+                roomIdsStr.append(roomIds.get(i));
+            }
+            String display = roomIdsStr + " - " + artist;
+            listView.getItems().add(display);
+        }
+
+
+        dialog.getDialogPane().setContent(listView);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        dialog.setResultConverter(buttonType -> {
+            if (buttonType == ButtonType.OK) {
+                Set<String> selectedDisplays = new HashSet<>(listView.getSelectionModel().getSelectedItems());
+                Set<String> selectedArtists = new HashSet<>();
+
+                for (String display : selectedDisplays) {
+                    String artist = display.substring(display.indexOf(" - ") + 3);
+                    selectedArtists.add(artist);
+                }
+                return selectedArtists;
+            }
+            return null;
+        });
+
+        Optional<Set<String>> result = dialog.showAndWait();
+
+        return result.orElse(new HashSet<>());
     }
 
     @FXML
