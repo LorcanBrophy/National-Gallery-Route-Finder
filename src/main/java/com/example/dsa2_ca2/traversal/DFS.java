@@ -70,7 +70,7 @@ public class DFS {
     }
 
     private static <T> boolean allWaypointsVisited(MyList<Vertex<T>> path, Set<T> waypoints) {
-        if (waypoints.isEmpty()) return true;
+        if (waypoints.isEmpty() || waypoints == null) return true;
 
         Set<T> foundWaypoints = new HashSet<>();
         for (int i = 0; i < path.size(); i++) {

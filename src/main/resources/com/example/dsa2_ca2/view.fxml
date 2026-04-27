@@ -23,6 +23,9 @@
 
                 <Menu text="Setup">
                     <MenuItem text="Choose Points" onAction="#choosePoints"/>
+                    <MenuItem text="Add Room" onAction="#onAddRoom"/>
+                    <MenuItem text="Add Exhibit" onAction="#onAddExhibit"/>
+                    <MenuItem text="Add Edge" onAction="#onAddEdge"/>
                 </Menu>
 
                 <Menu text="Traversal">

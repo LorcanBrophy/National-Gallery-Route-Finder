@@ -3,6 +3,9 @@ module com.example.dsa2_ca2 {
     requires javafx.fxml;
     requires java.desktop;
 
+    requires javafx.graphics;
+    requires javafx.base;
+
 
     exports com.example.dsa2_ca2.graph;
     opens com.example.dsa2_ca2.graph to javafx.fxml;
