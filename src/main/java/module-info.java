@@ -5,6 +5,7 @@ module com.example.dsa2_ca2 {
 
     requires javafx.graphics;
     requires javafx.base;
+    requires jmh.core;
 
 
     exports com.example.dsa2_ca2.graph;
