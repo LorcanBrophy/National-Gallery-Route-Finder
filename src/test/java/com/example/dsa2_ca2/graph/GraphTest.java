@@ -1,6 +1,6 @@
 package com.example.dsa2_ca2.graph;
 
-import com.example.dsa2_ca2.loader.CSVLoader;
+import com.example.dsa2_ca2.utils.CSVLoader;
 import com.example.dsa2_ca2.model.MyList;
 import com.example.dsa2_ca2.model.Room;
 import org.junit.jupiter.api.BeforeEach;
@@ -55,12 +55,12 @@ public class GraphTest {
     void testUndirectedEdge() {
 
         // test size
-        assertEquals(4, v18.getEdges().size()); // 18 <--> 19, 21, 22, 24
+        assertEquals(5, v18.getEdges().size()); // 18 <--> 15, 19, 21, 22, 24
         assertEquals(2, v19.getEdges().size()); // 19 <--> 18, 20
 
         // test edges
-        assertEquals(19, v18.getEdges().get(0).getDestination().getData().getId());
-        assertEquals(21, v18.getEdges().get(1).getDestination().getData().getId());
+        assertEquals(15, v18.getEdges().get(0).getDestination().getData().getId());
+        assertEquals(19, v18.getEdges().get(1).getDestination().getData().getId());
 
         assertEquals(18, v19.getEdges().get(0).getDestination().getData().getId());
 

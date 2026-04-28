@@ -51,8 +51,21 @@ class MyArrayListTest {
     }
 
     @Test
+    void testAddAll2() {
+        MyList<String> other = new MyArrayList<>();
+        other.add("A");
+        other.add("B");
+
+        list.addAll(other);
+
+        assertEquals(2, list.size());
+        assertEquals("A", list.get(0));
+        assertEquals("B", list.get(1));
+    }
+
+    @Test
     void testAddNull() {
-        assertFalse(list.addAll(null));
+        assertFalse(list.addAll((List<String>) null));
     }
 
     @Test

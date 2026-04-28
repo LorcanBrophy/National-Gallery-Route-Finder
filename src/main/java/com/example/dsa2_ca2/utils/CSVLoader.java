@@ -1,9 +1,8 @@
-package com.example.dsa2_ca2.loader;
+package com.example.dsa2_ca2.utils;
 
 import com.example.dsa2_ca2.graph.Graph;
 import com.example.dsa2_ca2.model.Exhibit;
 import com.example.dsa2_ca2.model.Room;
-import com.example.dsa2_ca2.model.MyArrayList;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

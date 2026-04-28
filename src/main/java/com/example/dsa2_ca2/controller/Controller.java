@@ -1,43 +1,30 @@
 package com.example.dsa2_ca2.controller;
 
-import com.example.dsa2_ca2.graph.Edge;
 import com.example.dsa2_ca2.graph.Vertex;
-import com.example.dsa2_ca2.loader.CSVLoader;
+import com.example.dsa2_ca2.utils.CSVLoader;
 import com.example.dsa2_ca2.graph.Graph;
 import com.example.dsa2_ca2.utils.DialogUtils;
 import com.example.dsa2_ca2.model.Exhibit;
-import com.example.dsa2_ca2.model.MyArrayList;
 import com.example.dsa2_ca2.model.MyList;
 import com.example.dsa2_ca2.model.Room;
 import com.example.dsa2_ca2.traversal.BFS;
 import com.example.dsa2_ca2.traversal.DFS;
 import com.example.dsa2_ca2.traversal.Dijkstra;
 import com.example.dsa2_ca2.traversal.PixelBFS;
-import com.example.dsa2_ca2.utils.DialogUtils;
 import com.example.dsa2_ca2.utils.DrawingUtils;
 import com.example.dsa2_ca2.utils.Utils;
-import javafx.animation.KeyFrame;
-import javafx.animation.PauseTransition;
-import javafx.animation.SequentialTransition;
-import javafx.animation.Timeline;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.util.Duration;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.*;
 
 public class Controller {

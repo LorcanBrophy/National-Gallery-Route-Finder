@@ -13,6 +13,9 @@ public interface MyList<T> extends Iterable<T> {
     boolean add(T element);
 
     boolean addAll(List<T> other);
+
+    boolean addAll(MyList<T> other);
+
     /**
      * Replaces the element at the specified index with the given element.
      *

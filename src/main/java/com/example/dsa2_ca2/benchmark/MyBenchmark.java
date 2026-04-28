@@ -5,9 +5,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import com.example.dsa2_ca2.controller.Controller;
 import com.example.dsa2_ca2.graph.Graph;
-import com.example.dsa2_ca2.loader.CSVLoader;
+import com.example.dsa2_ca2.utils.CSVLoader;
 import com.example.dsa2_ca2.model.MyArrayList;
 import com.example.dsa2_ca2.model.MyList;
 import com.example.dsa2_ca2.model.Room;

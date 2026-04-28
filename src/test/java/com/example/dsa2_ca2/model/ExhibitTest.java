@@ -1,7 +1,7 @@
 package com.example.dsa2_ca2.model;
 
 import com.example.dsa2_ca2.graph.Graph;
-import com.example.dsa2_ca2.loader.CSVLoader;
+import com.example.dsa2_ca2.utils.CSVLoader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
