@@ -13,35 +13,49 @@ public class BFS {
 
     // returns shortest path using BFS
     public static <T> MyList<T> traverse(Graph<T> graph, int startID, int endID) {
-        MyList<T> result = new MyArrayList<>();
 
+        // final correct path to be returned
+        MyList<T> correctPath = new MyArrayList<>();
+
+        // initial node and target node
         Vertex<T> start = graph.getVertex(startID);
         Vertex<T> end = graph.getVertex(endID);
-        if (start == null || end == null) return result;
 
-
-        Set<Vertex<T>> visited = new HashSet<>(); // could maybe implement a boolean[]
-        Queue<Vertex<T>> queue = new LinkedList<>();
-        Map<Vertex<T>, Vertex<T>> parent = new HashMap<>();
-
+        // tracks visited nodes, can do if (!visited.contains(current)) to see if node is visited
+        Set<Vertex<T>> visited = new HashSet<>();
         visited.add(start);
+
+        // queue to process neighbours
+        Queue<Vertex<T>> queue = new LinkedList<>();
         queue.add(start);
+
+        // stores the parents, used to reconstruct path later
+        // key = child, value = parent
+        Map<Vertex<T>, Vertex<T>> parent = new HashMap<>();
         parent.put(start, null);
 
+        // flag to know if end has been found
         boolean found = false;
 
-        // actual bfs traversal
         while (!queue.isEmpty()) {
-            Vertex<T> current = queue.poll(); // returns/removes first element in queue in FIFO order
+
+            // .poll() remove and returns the first element in the queue
+            // queue = [A, B, C]
+            // current = queue.poll()
+            // queue = [B, C]
+            // current = A
+            Vertex<T> current = queue.poll();
 
             if (current == end) {
                 found = true;
                 break;
             }
 
+            // iterate through the unvisited neighbours of current node
             for (Edge<T> edge : current.getEdges()) {
                 Vertex<T> neighbour = edge.getDestination();
 
+                // if the node is unvisited, add it to the queue
                 if (!visited.contains(neighbour)) {
                     visited.add(neighbour);
                     queue.add(neighbour);
@@ -50,20 +64,25 @@ public class BFS {
             }
         }
 
-        if (!found) return result;
+        if (!found) return correctPath;
 
+        // now that the target was found, the path can be reconstructed, starting from the end
+        MyList<Vertex<T>> reversePath = new MyArrayList<>();
 
-        // now that
-
-        LinkedList<T> path = new LinkedList<>();
-
-        Vertex<T> step = end;
-        while (step != null) {
-            path.addFirst(step.getData());
-            step = parent.get(step);
+        // parent = [null:A, A:B, B:C, D:E]
+        // iterate until current = null, at the start, and add current to reverseList
+        Vertex<T> current = end;
+        while (current != null) {
+            reversePath.add(current);
+            current = parent.get(current);
         }
 
-        result.addAll(path);
-        return result;
+        // reversePath = [E, D, C, B, A]
+        // now need reverse it
+        for (int i = reversePath.size() - 1; i >= 0; i--) {
+            correctPath.add(reversePath.get(i).getData());
+        }
+
+        return correctPath;
     }
 }

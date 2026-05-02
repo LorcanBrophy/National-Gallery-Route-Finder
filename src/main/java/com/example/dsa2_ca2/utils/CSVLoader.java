@@ -82,7 +82,7 @@ public class CSVLoader {
                 int dest = Integer.parseInt(fields[1].trim());
                 double weight = Double.parseDouble(fields[2].trim());
 
-                graph.addUndirectedEdge(src, dest, weight);
+                graph.addUndirectedEdge(src, dest, weight); // s
             }
         }
     }

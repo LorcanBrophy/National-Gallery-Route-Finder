@@ -1,5 +1,6 @@
 package com.example.dsa2_ca2.traversal;
 
+import com.example.dsa2_ca2.graph.Vertex;
 import com.example.dsa2_ca2.model.MyArrayList;
 import com.example.dsa2_ca2.model.MyList;
 
@@ -14,67 +15,108 @@ public class PixelBFS {
 
     // returns shortest path using BFS
     public static MyList<Point> traverse(BufferedImage image, Point start, Point end) {
-        MyList<Point> result = new MyArrayList<>();
 
+        // final correct path to be returned
+        MyList<Point> correctPath = new MyArrayList<>();
+
+        // tracks visited nodes, can do if (!visited.contains(current)) to see if node is visited
         Set<Point> visited = new HashSet<>();
-        Queue<Point> queue = new LinkedList<>();
-        Map<Point, Point> parent = new HashMap<>();
-
         visited.add(start);
+
+        // queue to process neighbours
+        Queue<Point> queue = new LinkedList<>();
         queue.add(start);
+
+        // stores the parents, used to reconstruct path later
+        // key = child, value = parent
+        Map<Point, Point> parent = new HashMap<>();
         parent.put(start, null);
 
+        // flag to know if end has been found
         boolean found = false;
 
-        int[] dx = {1, -1, 0, 0};
-        int[] dy = {0, 0, 1, -1};
+        // used to move to adjacent pixels
+        // row = x, column = y
+        int[][] directions = {
+                {1, 0}, // down (row + 1)
+                {-1, 0}, // up (row - 1)
+                {0, 1}, // right (col + 1)
+                {0, -1} // left (col - 1)
+        };
 
         // actual bfs traversal
         while (!queue.isEmpty()) {
 
-            Point current = queue.poll(); // returns/removes first element in queue in FIFO order
+            // .poll() remove and returns the first element in the queue
+            // queue = [A, B, C]
+            // current = queue.poll()
+            // queue = [B, C]
+            // current = A
+            Point current = queue.poll();
 
             if (current.equals(end)) {
                 found = true;
                 break;
             }
 
+            // check adjacent pixels to current (C)
+            // # # #
+            // # C #
+            // # # #
+            for (int[] dir : directions) { // checks {1,0}, then {-1,0}, etc
+                int nextX = current.x + dir[0];
+                int nextY = current.y + dir[1];
 
-            for (int i = 0; i < 4; i++) {
-                int nextX = current.x + dx[i];
-                int nextY = current.y + dy[i];
-
+                // bound checks (not really neccessary tbh cause the gallery is within 0 and width/height
                 if (nextX < 0 || nextY < 0 || nextX >= image.getWidth() || nextY >= image.getHeight()) continue;
 
-                int colour = image.getRGB(nextX, nextY);
-                int rgb = colour & 0xFFFFFF;
+                // gets colour of current pixel
+                // returns 32 bit int
+                // i.e. rgb = aaaaaaaa rrrrrrrr gggggggg bbbbbbbb
+                //      rgb = 11111111 11111111 11111111 11111111
+                int argb = image.getRGB(nextX, nextY);
 
-                if (rgb < 0xCCCCCC) continue;
+                // remove alpha channels
+                //          argb = 11111111 11111111 11111111 11111111
+                // bitwise AND : & 00000000 11111111 11111111 11111111
+                //           rgb = 00000000 11111111 11111111 11111111  = 00000000 rrrrrrrr gggggggg bbbbbbbb
+                int rgb = argb & 0xFFFFFF;
 
-                Point neighbor = new Point(nextX, nextY);
+                // checks if rgb is dark
+                if (rgb < 0x808080) continue;
 
-                if (!visited.contains(neighbor)) {
-                    visited.add(neighbor);
-                    queue.add(neighbor);
-                    parent.put(neighbor, current);
+                // creates neighbour
+                Point neighbour = new Point(nextX, nextY);
+
+                // if the pixel is unvisited, add it to the queue
+                if (!visited.contains(neighbour)) {
+                    visited.add(neighbour);
+                    queue.add(neighbour);
+                    parent.put(neighbour, current);
                 }
             }
         }
 
-        if (!found) return result;
+        if (!found) return correctPath;
 
 
-        // now that
+        // now that the target was found, the path can be reconstructed, starting from the end
+        MyList<Point> reversePath = new MyArrayList<>();
 
-        LinkedList<Point> path = new LinkedList<>();
-
-        Point step = end;
-        while (step != null) {
-            path.addFirst(step);
-            step = parent.get(step);
+        // parent = [null:A, A:B, B:C, D:E]
+        // iterate until current = null, at the start, and add current to reverseList
+        Point current = end;
+        while (current != null) {
+            reversePath.add(current);
+            current = parent.get(current);
         }
 
-        result.addAll(path);
-        return result;
+        // reversePath = [E, D, C, B, A]
+        // now need reverse it
+        for (int i = reversePath.size() - 1; i >= 0; i--) {
+            correctPath.add(reversePath.get(i));
+        }
+
+        return correctPath;
     }
 }
