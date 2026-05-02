@@ -20,6 +20,7 @@ public class BFS {
         // initial node and target node
         Vertex<T> start = graph.getVertex(startID);
         Vertex<T> end = graph.getVertex(endID);
+        if (start == null || end == null) return correctPath;
 
         // tracks visited nodes, can do if (!visited.contains(current)) to see if node is visited
         Set<Vertex<T>> visited = new HashSet<>();
