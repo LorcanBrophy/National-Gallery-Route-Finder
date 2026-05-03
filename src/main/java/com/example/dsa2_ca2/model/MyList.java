@@ -71,4 +71,6 @@ public interface MyList<T> extends Iterable<T> {
      * Removes all elements from the list
      */
     void clear();
+
+    boolean contains( Object object);
 }

@@ -135,6 +135,15 @@ public class MyArrayList<T> implements MyList<T> {
         size = 0;
     }
 
+    @Override
+    public boolean contains(Object object) {
+        for (Object element : elements) {
+            if (object == element) return true;
+        }
+
+        return false;
+    }
+
     public int capacity() {
         return elements.length;
     }

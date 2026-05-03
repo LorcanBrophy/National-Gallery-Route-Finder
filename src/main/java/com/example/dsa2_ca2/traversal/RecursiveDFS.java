@@ -5,11 +5,10 @@ import com.example.dsa2_ca2.graph.Graph;
 import com.example.dsa2_ca2.graph.Vertex;
 import com.example.dsa2_ca2.model.MyArrayList;
 import com.example.dsa2_ca2.model.MyList;
-import com.example.dsa2_ca2.model.Room;
 
 import java.util.*;
 
-public class DFS {
+public class RecursiveDFS {
 
     public static <T> MyList<MyList<T>> traverse(Graph<T> graph, int startID, int endID, int numPermutations, Set<T> avoidedRooms, Set<T> waypoints) {
 

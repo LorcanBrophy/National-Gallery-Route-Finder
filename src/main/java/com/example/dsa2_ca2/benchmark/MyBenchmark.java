@@ -6,12 +6,14 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import com.example.dsa2_ca2.graph.Graph;
+import com.example.dsa2_ca2.graph.Vertex;
+import com.example.dsa2_ca2.traversal.IterativeDFS;
 import com.example.dsa2_ca2.utils.CSVLoader;
 import com.example.dsa2_ca2.model.MyArrayList;
 import com.example.dsa2_ca2.model.MyList;
 import com.example.dsa2_ca2.model.Room;
 import com.example.dsa2_ca2.traversal.BFS;
-import com.example.dsa2_ca2.traversal.DFS;
+import com.example.dsa2_ca2.traversal.RecursiveDFS;
 import com.example.dsa2_ca2.traversal.Dijkstra;
 import org.openjdk.jmh.annotations.*;
 
@@ -45,9 +47,17 @@ public class MyBenchmark {
                 "src/main/resources/com/example/dsa2_ca2/edges.csv"
         );
 
-        startID = (int) (40 * Math.random());
-        endID = (int) (40 * Math.random());
-        }
+        MyList<Vertex<Room>> vertices = graph.getAllVertices();
+
+        int startIndex = (int) (Math.random() * vertices.size());
+        int endIndex;
+
+        do endIndex = (int) (Math.random() * vertices.size());
+        while (endIndex == startIndex);
+
+        startID = vertices.get(startIndex).getData().getId();
+        endID   = vertices.get(endIndex).getData().getId();
+    }
 
 
     @Benchmark
@@ -56,8 +66,13 @@ public class MyBenchmark {
     }
 
     @Benchmark
-    public void runDFS() {
-        DFS.traverse(graph, startID, endID, 10, avoid, waypoints2);
+    public void runIterativeDFS() {
+        IterativeDFS.traverse(graph, startID, endID, 10);
+    }
+
+    @Benchmark
+    public void runRecursiveDFS() {
+        RecursiveDFS.traverse(graph, startID, endID, 10, avoid, waypoints2);
     }
 
     @Benchmark

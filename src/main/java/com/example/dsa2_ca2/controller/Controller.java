@@ -1,16 +1,13 @@
 package com.example.dsa2_ca2.controller;
 
 import com.example.dsa2_ca2.graph.Vertex;
+import com.example.dsa2_ca2.traversal.*;
 import com.example.dsa2_ca2.utils.CSVLoader;
 import com.example.dsa2_ca2.graph.Graph;
 import com.example.dsa2_ca2.utils.DialogUtils;
 import com.example.dsa2_ca2.model.Exhibit;
 import com.example.dsa2_ca2.model.MyList;
 import com.example.dsa2_ca2.model.Room;
-import com.example.dsa2_ca2.traversal.BFS;
-import com.example.dsa2_ca2.traversal.DFS;
-import com.example.dsa2_ca2.traversal.Dijkstra;
-import com.example.dsa2_ca2.traversal.PixelBFS;
 import com.example.dsa2_ca2.utils.DrawingUtils;
 import com.example.dsa2_ca2.utils.Utils;
 import javafx.event.EventHandler;
@@ -231,16 +228,14 @@ public class Controller {
         boolean wantsToVisit = dialogUtils.showConfirmationDialog("Waypoint Rooms", "Do you want to include any rooms in the route?");
         if (wantsToVisit) {
             waypoint = dialogUtils.showWaypointDialog();
-            MyList<MyList<Room>> pathWaypoint = DFS.traverse(graph, startID, endID, numPermutations,  avoid, waypoint);
+            MyList<MyList<Room>> pathWaypoint = RecursiveDFS.traverse(graph, startID, endID, numPermutations,  avoid, waypoint);
             if (pathWaypoint.isEmpty()) return;
             drawingUtils.animateDFSRecursion(pathWaypoint, 0);
             return;
         }
 
-        MyList<MyList<Room>> allPaths = DFS.traverse(graph, startID, endID, numPermutations, avoid, waypoint);
-
-        System.out.println("Total number of routes = " + allPaths.size());
-
+        MyList<MyList<Room>> allPaths = RecursiveDFS.traverse(graph, startID, endID, numPermutations, avoid, waypoint);
+        MyList<MyList<Room>> allPaths2 = IterativeDFS.traverse(graph, startID, endID, numPermutations);
 
         drawingUtils.animateDFSRecursion(allPaths, 0);
         utils.viewRoutes(allPaths);
