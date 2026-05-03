@@ -26,6 +26,7 @@ public class IterativeDFS {
         initialPath.add(start);
 
         // stack keeps track of DFS state
+        // Pair data structure stores 2 related objects
         // stores [current vertex, currentPath]
         Stack<Pair<Vertex<T>, MyList<Vertex<T>>>> stack = new Stack<>();
         stack.push(new Pair<>(start, initialPath));

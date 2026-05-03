@@ -12,11 +12,15 @@ import com.example.dsa2_ca2.utils.DrawingUtils;
 import com.example.dsa2_ca2.utils.Utils;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -69,7 +73,7 @@ public class Controller {
 
     @FXML
     private void loadBackgroundImage() {
-        File file = new File("src/main/resources/com/example/dsa2_ca2/map.png");
+        File file = new File("src/main/resources/com/example/dsa2_ca2/mapImages/map.png");
         backgroundImage = new Image(file.toURI().toString());
 
         mapCanvas.setWidth(backgroundImage.getWidth());
@@ -117,6 +121,24 @@ public class Controller {
 
 
         });*/
+    }
+
+    public void displayPathImages(MyList<Room> path) {
+
+        HBox pathBox = drawingUtils.buildPathView(path);
+
+        ScrollPane scrollPane = new ScrollPane(pathBox);
+        scrollPane.setFitToHeight(true);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+
+        Stage stage = new Stage();
+
+        Scene scene = new Scene(scrollPane, 800, 250);
+        stage.setScene(scene);
+
+        stage.show();
     }
 
     // update csv
@@ -176,6 +198,7 @@ public class Controller {
         MyList<Room> path = BFS.traverse(graph, startID, endID);
 
         drawingUtils.drawPath(path);
+        displayPathImages(path);
     }
 
     @FXML
@@ -185,7 +208,7 @@ public class Controller {
             utils.removePathLabel();
 
             BufferedImage bwImage = ImageIO.read(
-                    new File("src/main/resources/com/example/dsa2_ca2/map(BW).png")
+                    new File("src/main/resources/com/example/dsa2_ca2/mapImages/map(BW).png")
             );
 
             if (startPoint == null || endPoint == null) return;
@@ -264,6 +287,7 @@ public class Controller {
             MyList<Room> pathWaypoint = Dijkstra.traverseWaypoints(graph, startID, endID, avoid, utils.extractIDs(waypoint));
             if (pathWaypoint.isEmpty()) return;
             drawingUtils.drawPath(pathWaypoint);
+            displayPathImages(pathWaypoint);
             return;
         }
 
@@ -271,6 +295,7 @@ public class Controller {
         if (path.isEmpty()) return;
 
         drawingUtils.drawPath(path);
+        displayPathImages(path);
     }
 
     @FXML
@@ -310,6 +335,7 @@ public class Controller {
             MyList<Room> pathWaypoint = Dijkstra.traverseWaypoints(graph, startID, endID, avoid, utils.extractIDs(waypoints));
             if (pathWaypoint.isEmpty()) return;
             drawingUtils.drawPath(pathWaypoint);
+            displayPathImages(pathWaypoint);
             return;
         }
 
@@ -317,6 +343,7 @@ public class Controller {
         if (path.isEmpty()) return;
 
         drawingUtils.drawPath(path);
+        displayPathImages(path);
 
     }
 

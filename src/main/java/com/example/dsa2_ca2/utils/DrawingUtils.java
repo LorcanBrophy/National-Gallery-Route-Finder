@@ -9,9 +9,15 @@ import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
+
+import java.util.Objects;
 
 public class DrawingUtils {
 
@@ -171,6 +177,38 @@ public class DrawingUtils {
 
         graphicsContext.setStroke(Color.BLUE);
         graphicsContext.setLineWidth(2.0);
+    }
+
+
+    public HBox buildPathView(MyList<Room> path) {
+
+        HBox box = new HBox();
+        box.setSpacing(15);
+
+        for (Room room : path) {
+
+            ImageView imageView = new ImageView(getRoomImage(room));
+            imageView.setFitWidth(200);
+            imageView.setFitHeight(200);
+            imageView.setPreserveRatio(false);
+
+            // Label title = new Label(room.getId() + " - " + room.getName());
+            Label title = new Label("Room " + room.getId());
+
+            VBox item = new VBox(imageView, title);
+            item.setSpacing(5);
+
+            box.getChildren().add(item);
+        }
+
+        return box;
+    }
+
+    public static Image getRoomImage(Room room) {
+
+        String path = "/com/example/dsa2_ca2/roomImages/room" + room.getId() + ".png";
+
+        return new Image(Objects.requireNonNull(DrawingUtils.class.getResourceAsStream(path)));
     }
 
 }
