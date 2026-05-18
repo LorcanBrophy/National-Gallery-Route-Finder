@@ -18,7 +18,7 @@
                 </fx:define>
 
                 <Menu text="File">
-                    <MenuItem text="Exit"/>
+                    <MenuItem text="Exit" onAction="#onExit"/>
                 </Menu>
 
                 <Menu text="Setup">

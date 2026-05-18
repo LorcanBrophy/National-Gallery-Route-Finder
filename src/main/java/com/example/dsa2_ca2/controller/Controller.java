@@ -10,6 +10,7 @@ import com.example.dsa2_ca2.model.MyList;
 import com.example.dsa2_ca2.model.Room;
 import com.example.dsa2_ca2.utils.DrawingUtils;
 import com.example.dsa2_ca2.utils.Utils;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
@@ -183,6 +184,10 @@ public class Controller {
         source.connectUndirected(dest, weight);
     }
 
+    @FXML
+    private void onExit() {
+        Platform.exit();
+    }
 
     // BFS
 

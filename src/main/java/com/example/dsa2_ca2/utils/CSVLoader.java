@@ -30,13 +30,13 @@ public class CSVLoader {
             while ((line = br.readLine()) != null) {
 
                 // split csv:
-                // 21,"Anthony van Dyck (1599–1641)","Baroque"
-                // -> [21, "Anthony van Dyck (1599–1641)", "Baroque"]
+                // 21,"Anthony van Dyck (1599–1641)","Baroque",262,77
+                // -> [21, "Anthony van Dyck (1599–1641)", "Baroque", 262, 77]
                 String[] fields = line.split(",", 5);
 
                 // assign each field for Room constructor
                 int id = Integer.parseInt(fields[0].trim());
-                String name = fields[1].replace("\"", "").trim(); // \" removes any " characters i.e ""Hello Hassan"" -> "Hello Hassan"
+                String name = fields[1].replace("\"", "").trim(); // \" removes any " characters i.e "Hello Hassan" -> Hello Hassan
                 String period = fields[2].replace("\"", "").trim();
                 int x = Integer.parseInt(fields[3].trim());
                 int y = Integer.parseInt(fields[4].trim());

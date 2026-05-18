@@ -24,9 +24,10 @@ public class Vertex<T> {
     }
 
     // methods
-    /*public void connectDirected(Vertex<T> destNode, double weight) {
+    public void connectDirected(Vertex<T> destNode, double weight) {
         edges.add(new Edge<>(destNode, weight));
-    }*/
+    }
+
     public void connectUndirected(Vertex<T> destNode, double weight) {
         edges.add(new Edge<>(destNode, weight));
         destNode.edges.add(new Edge<>(this, weight));

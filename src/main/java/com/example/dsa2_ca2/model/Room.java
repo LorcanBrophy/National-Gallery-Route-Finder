@@ -8,7 +8,6 @@ public class Room {
     private final String period;
     private final int x;
     private final int y;
-
     private final MyList<Exhibit> exhibits;
 
     // constructor
